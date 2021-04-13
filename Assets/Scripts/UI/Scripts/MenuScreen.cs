@@ -7,5 +7,6 @@ public class MenuScreen : ScreenBase
     public void StartLevel(string levelName)
     {
         App.gameManager.LoadScene(levelName);
+        Hide();
     }
 }

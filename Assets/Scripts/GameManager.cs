@@ -16,9 +16,21 @@ public class GameManager : MonoBehaviour
         LoadScene("UIScene");
     }
 
+    public void ReturnToMenu()
+    {
+        // unload active level
+        UnloadScene(SceneManager.GetActiveScene().name);
+        App.screenManager.Show<MenuScreen>();
+    }
+
     public void LoadScene(string sceneName)
     {
         StartCoroutine(LoadSceneCoroutine(sceneName));
+    }
+
+    public void UnloadScene(string sceneName)
+    {
+        StartCoroutine(UnloadSceneCoroutine(sceneName));
     }
 
     IEnumerator LoadSceneCoroutine(string sceneName)
@@ -36,5 +48,25 @@ public class GameManager : MonoBehaviour
 
         // scene is loaded
         Debug.Log("scene " + sceneName + " loaded");
+
+        if(sceneName != "UIScene")
+        {
+            SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
+            App.screenManager.Show<IngameScreen>();
+        }
+    }
+
+    IEnumerator UnloadSceneCoroutine(string sceneName)
+    {
+        AsyncOperation operation = SceneManager.UnloadSceneAsync(sceneName);
+
+        while(!operation.isDone)
+        {
+            yield return null;
+        }
+
+        SceneManager.SetActiveScene(SceneManager.GetSceneByName("MainScene"));
+        // scene is unloaded
+        Debug.Log("scene " + sceneName + " unloaded");
     }
 }
