@@ -10,6 +10,7 @@ public class ScreenManager : MonoBehaviour
     void Awake()
     {
         screens = GetComponentsInChildren<ScreenBase>(true);
+        App.screenManager = this;
     }
 
     public void Show<T>()
