@@ -36,6 +36,5 @@ public class GameManager : MonoBehaviour
 
         // scene is loaded
         Debug.Log("scene " + sceneName + " loaded");
-
     }
 }
