@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        LoadScene("UIScene");
+        LoadScene("UIScene", null, false);
     }
 
     public void ReturnToMenu()
@@ -23,9 +23,9 @@ public class GameManager : MonoBehaviour
         App.screenManager.Show<MenuScreen>();
     }
 
-    public void LoadScene(string sceneName)
+    public void LoadScene(string sceneName, CommandBase afterSceneLoadedCommand, bool setAsActive)
     {
-        StartCoroutine(LoadSceneCoroutine(sceneName));
+        StartCoroutine(LoadSceneCoroutine(sceneName, afterSceneLoadedCommand, setAsActive));
     }
 
     public void UnloadScene(string sceneName)
@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(UnloadSceneCoroutine(sceneName));
     }
 
-    IEnumerator LoadSceneCoroutine(string sceneName)
+    IEnumerator LoadSceneCoroutine(string sceneName, CommandBase afterSceneLoadedCommand, bool setAsActive)
     {
         AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
         operation.allowSceneActivation = false;
@@ -49,11 +49,20 @@ public class GameManager : MonoBehaviour
         // scene is loaded
         Debug.Log("scene " + sceneName + " loaded");
 
-        if(sceneName != "UIScene")
+        if(afterSceneLoadedCommand != null)
+        {
+            afterSceneLoadedCommand.Execute();
+        }
+        if(setAsActive)
         {
             SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
-            App.screenManager.Show<IngameScreen>();
         }
+
+        //if(sceneName != "UIScene")
+        //{
+            //SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
+            //App.screenManager.Show<IngameScreen>();
+        //}
     }
 
     IEnumerator UnloadSceneCoroutine(string sceneName)
