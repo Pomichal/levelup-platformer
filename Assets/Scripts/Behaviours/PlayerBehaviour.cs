@@ -9,17 +9,37 @@ public class PlayerBehaviour : MonoBehaviour
     public float maxSpeed;
     public float jumpSpeed;
 
+    public Animator animator;
+
     Rigidbody2D rb;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        App.playersTransform = transform;
     }
 
     void Update()
     {
         float hor = Input.GetAxis("Horizontal");
 
+        if(rb.velocity.x != 0)
+        {
+            animator.SetBool("Moving", true);
+
+            if(rb.velocity.x > 0)
+            {
+                transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, 0, transform.rotation.eulerAngles.z);
+            }
+            else
+            {
+                transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles.x, 180, transform.rotation.eulerAngles.z);
+            }
+        }
+        else
+        {
+            animator.SetBool("Moving", false);
+        }
         rb.velocity = new Vector2(hor * speed, rb.velocity.y);
         //rb.AddForce(new Vector2(hor * speed, 0));
         //if(Mathf.Abs(rb.velocity.x) > maxSpeed)
