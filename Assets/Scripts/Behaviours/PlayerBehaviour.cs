@@ -16,6 +16,7 @@ public class PlayerBehaviour : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        App.playersTransform = transform;
     }
 
     void Update()
