@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyBehaviour : MonoBehaviour
+public class EnemyBehaviour : EnemyBaseBehaviour
 {
     public Vector2 direction;
     public float speed;
@@ -23,11 +23,6 @@ public class EnemyBehaviour : MonoBehaviour
 
     void FixedUpdate()
     {
-        int layerMask = 1 << 8;
-        // 10000000x2
-        layerMask = ~layerMask;
-        // 01111111x2
-
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, checkDistance, layerMask);
         Debug.DrawRay(transform.position, direction * checkDistance);
 
@@ -41,10 +36,7 @@ public class EnemyBehaviour : MonoBehaviour
             Debug.Log(hit.collider.name);
         }
 
-        hit = Physics2D.Raycast(transform.position, App.playersTransform.position - transform.position, Mathf.Infinity, layerMask);
-        Debug.DrawRay(transform.position, App.playersTransform.position - transform.position);
-
-        if(hit.collider != null && hit.collider.CompareTag("Player"))
+        if(CanSeeThePlayer())
         {
             direction = (App.playersTransform.position - transform.position).normalized;
             rb.velocity = direction * speed;
