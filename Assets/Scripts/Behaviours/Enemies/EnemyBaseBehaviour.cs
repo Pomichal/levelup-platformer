@@ -33,7 +33,7 @@ public class EnemyBaseBehaviour : MonoBehaviour
         return false;
     }
 
-    public bool CanGoForward(Vector3 direction)
+    public virtual bool CanGoForward(Vector3 direction)
     {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, checkDistance, layerMask);
         Debug.DrawRay(transform.position, direction * checkDistance);
