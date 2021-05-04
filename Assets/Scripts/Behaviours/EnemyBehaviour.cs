@@ -23,7 +23,12 @@ public class EnemyBehaviour : MonoBehaviour
 
     void FixedUpdate()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, checkDistance);
+        int layerMask = 1 << 8;
+        // 10000000x2
+        layerMask = ~layerMask;
+        // 01111111x2
+
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, checkDistance, layerMask);
         Debug.DrawRay(transform.position, direction * checkDistance);
 
         if(hit.collider != null)
@@ -36,13 +41,13 @@ public class EnemyBehaviour : MonoBehaviour
             Debug.Log(hit.collider.name);
         }
 
-        hit = Physics2D.Raycast(transform.position, App.playersTransform.position - transform.position);
+        hit = Physics2D.Raycast(transform.position, App.playersTransform.position - transform.position, Mathf.Infinity, layerMask);
         Debug.DrawRay(transform.position, App.playersTransform.position - transform.position);
 
         if(hit.collider != null && hit.collider.CompareTag("Player"))
         {
-            Debug.Log("I see the player");
-            // TODO: follow the player
+            direction = (App.playersTransform.position - transform.position).normalized;
+            rb.velocity = direction * speed;
         }
     }
 
