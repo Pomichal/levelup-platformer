@@ -6,7 +6,6 @@ public class EnemyBehaviour : EnemyBaseBehaviour
 {
     public Vector2 direction;
     public float speed;
-    public float checkDistance;
 
     Rigidbody2D rb;
 
@@ -23,17 +22,10 @@ public class EnemyBehaviour : EnemyBaseBehaviour
 
     void FixedUpdate()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, checkDistance, layerMask);
-        Debug.DrawRay(transform.position, direction * checkDistance);
-
-        if(hit.collider != null)
+        if(!CanGoForward(direction))
         {
-            if(!hit.collider.CompareTag("Player"))
-            {
-                direction = GetRandomDirection();
-                rb.velocity = direction * speed;
-            }
-            Debug.Log(hit.collider.name);
+            direction = GetRandomDirection();
+            rb.velocity = direction * speed;
         }
 
         if(CanSeeThePlayer())

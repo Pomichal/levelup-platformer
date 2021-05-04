@@ -6,6 +6,20 @@ public class EnemyBaseBehaviour : MonoBehaviour
 {
 
     public int layerMask = ~(1 << 8);
+    public float checkDistance = 1;
+    public float cooldown;
+    public float offset;
+    public Rigidbody2D projectilePrefab;
+    public float projectileSpeed;
+    public float timer;
+
+    void Update()
+    {
+        if(timer > 0)
+        {
+            timer -= Time.deltaTime;
+        }
+    }
 
     public bool CanSeeThePlayer()
     {
@@ -17,6 +31,28 @@ public class EnemyBaseBehaviour : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public bool CanGoForward(Vector3 direction)
+    {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, checkDistance, layerMask);
+        Debug.DrawRay(transform.position, direction * checkDistance);
+
+        if(hit.collider != null)
+        {
+            if(!hit.collider.CompareTag("Player"))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void FireProjectile()
+    {
+            timer = cooldown;
+            Rigidbody2D projectile = Instantiate(projectilePrefab, transform.position + GetPlayerDirection() * offset, Quaternion.identity);
+            projectile.AddForce(GetPlayerDirection() * projectileSpeed, ForceMode2D.Impulse);
     }
 
     public Vector3 GetPlayerDirection()
