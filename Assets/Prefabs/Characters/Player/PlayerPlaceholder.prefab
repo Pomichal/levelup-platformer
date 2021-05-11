@@ -178,6 +178,11 @@ MonoBehaviour:
   speed: 2
   maxSpeed: 1
   jumpSpeed: 5
+  coinsCollected: 0
+  animator: {fileID: 0}
+  onCoinsChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!95 &1707336548
 Animator:
   serializedVersion: 3

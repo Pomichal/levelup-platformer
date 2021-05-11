@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerBehaviour : MonoBehaviour
 {
@@ -8,8 +9,11 @@ public class PlayerBehaviour : MonoBehaviour
     public float speed;
     public float maxSpeed;
     public float jumpSpeed;
+    public int coinsCollected;
 
     public Animator animator;
+
+    public UnityEvent onCoinsChanged = new UnityEvent();
 
     Rigidbody2D rb;
 
@@ -17,6 +21,7 @@ public class PlayerBehaviour : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         App.playersTransform = transform;
+        App.player = this;
     }
 
     void Update()
@@ -52,6 +57,16 @@ public class PlayerBehaviour : MonoBehaviour
             //rb.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse);
 
             rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.CompareTag("Coin"))
+        {
+            coinsCollected++;
+            onCoinsChanged.Invoke();
+            other.gameObject.SetActive(false);
         }
     }
 }

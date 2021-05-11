@@ -6,4 +6,5 @@ public static class App
     public static ScreenManager screenManager;
 
     public static Transform playersTransform;
+    public static PlayerBehaviour player;
 }
