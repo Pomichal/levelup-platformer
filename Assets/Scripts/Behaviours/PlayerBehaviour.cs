@@ -15,6 +15,8 @@ public class PlayerBehaviour : MonoBehaviour
 
     public UnityEvent onCoinsChanged = new UnityEvent();
 
+    public MovingPlatformBehaviour platform;
+
     Rigidbody2D rb;
 
     void Awake()
@@ -58,6 +60,11 @@ public class PlayerBehaviour : MonoBehaviour
 
             rb.velocity = new Vector2(rb.velocity.x, jumpSpeed);
         }
+
+        if(Input.GetKeyDown(KeyCode.E) && platform != null)
+        {
+            platform.Activate();
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -68,5 +75,15 @@ public class PlayerBehaviour : MonoBehaviour
             onCoinsChanged.Invoke();
             other.gameObject.SetActive(false);
         }
+    }
+
+    public void SetPlatform(MovingPlatformBehaviour p)
+    {
+        platform = p;
+    }
+
+    public void RemovePlatform()
+    {
+        platform = null;
     }
 }
