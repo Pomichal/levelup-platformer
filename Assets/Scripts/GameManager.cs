@@ -5,6 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+
+    public LoadingScreen loadingScreen;
+
     void Awake()
     {
         App.gameManager = this;
@@ -25,11 +28,13 @@ public class GameManager : MonoBehaviour
 
     public void LoadScene(string sceneName, CommandBase afterSceneLoadedCommand, bool setAsActive)
     {
+        loadingScreen.StartLoading();
         StartCoroutine(LoadSceneCoroutine(sceneName, afterSceneLoadedCommand, setAsActive));
     }
 
     public void UnloadScene(string sceneName)
     {
+        loadingScreen.StartLoading();
         StartCoroutine(UnloadSceneCoroutine(sceneName));
     }
 
@@ -39,11 +44,12 @@ public class GameManager : MonoBehaviour
         operation.allowSceneActivation = false;
         while(!operation.isDone)
         {
+            loadingScreen.SetSlider(operation.progress);
             if(operation.progress >= 0.9f && !operation.allowSceneActivation)
             {
                 operation.allowSceneActivation = true;
             }
-            yield return null;
+            yield return new WaitForSeconds(.1f);
         }
 
         // scene is loaded
@@ -58,6 +64,8 @@ public class GameManager : MonoBehaviour
             SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
         }
 
+        loadingScreen.LoadingFinished();
+
         //if(sceneName != "UIScene")
         //{
             //SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
@@ -71,11 +79,14 @@ public class GameManager : MonoBehaviour
 
         while(!operation.isDone)
         {
-            yield return null;
+            loadingScreen.SetSlider(operation.progress);
+            yield return new WaitForSeconds(0.5f);
+            //yield return null;
         }
 
         SceneManager.SetActiveScene(SceneManager.GetSceneByName("MainScene"));
         // scene is unloaded
+        loadingScreen.LoadingFinished();
         Debug.Log("scene " + sceneName + " unloaded");
     }
 }
